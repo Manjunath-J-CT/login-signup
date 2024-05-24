@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import {
   Navigate,
   Route,
@@ -14,8 +13,10 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/login" element={<Login />} />
+          
           <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
