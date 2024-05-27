@@ -16,8 +16,8 @@ export default function Signup() {
     console.log(data);
   };
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="w-full max-w-xl border-2 flex flex-col space-y-4 rounded-xl m-6 p-4 py-6">
+    <div className="h-screen flex justify-center items-center bg-gray-200">
+      <div className="w-full max-w-xl border-2 flex flex-col space-y-4 rounded-xl m-6 p-4 py-6 border-black bg-white">
         <div>
           <span className="w-full max-w-xl font-sans text-3xl text-red-600 flex justify-center">
             Create an Account
