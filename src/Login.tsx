@@ -4,11 +4,6 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// type Data = {
-//   email: string;
-//   password: string;
-// };
-
 const schema = z.object({
   email: z
     .string()
@@ -20,12 +15,13 @@ const schema = z.object({
     .min(8, { message: "Password requires at least 8 characters" }),
 });
 
-// Infer the data type from the schema
 type Data = z.infer<typeof schema>;
+
 export default function Login() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Data>({
     resolver: zodResolver(schema),
@@ -34,9 +30,13 @@ export default function Login() {
     console.log(data);
   };
 
+  const watchAllFields = watch();
+
+  const isFormValid = watchAllFields.email && watchAllFields.password;
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-200">
-      <div className="border-2 border-black  rounded-xl w-full max-w-xl flex flex-col items-center space-y-6 py-8 m-8 bg-white">
+      <div className="border-2 border-black  rounded-xl w-full flex flex-col items-center space-y-6 py-8 m-8 bg-white mobile:max-w-sm tablet:max-w-xl">
         <div>
           <span className="font-sans text-4xl text-red-600 flex justify-center">
             Login
@@ -47,20 +47,16 @@ export default function Login() {
           className="w-full max-w-md flex flex-col space-y-4 px-8"
         >
           <div className="w-full flex flex-col">
-            <span className="text-xl">Email:</span>
-            <label htmlFor="email"></label>
+            <span className="text-xl">
+              Email<span className="text-red-400">*</span>:
+            </span>
+            <label htmlFor="email" aria-required></label>
             <input
               className="border-2 w-full p-1"
               type="text"
               id="email"
               placeholder="Enter the email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                  message: "Email is not valid",
-                },
-              })}
+              {...register("email")}
             />
             <span className="text-red-500 text-sm">
               {errors.email?.message}
@@ -68,20 +64,16 @@ export default function Login() {
           </div>
 
           <div className="m-full flex flex-col">
-            <span className="text-xl">Password:</span>
+            <span className="text-xl">
+              Password<span className="text-red-400">*</span>:
+            </span>
             <label htmlFor="password"></label>
             <input
               className="border-2 w-full p-1"
               type="password"
               id="password"
               placeholder="Enter Password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Requires atleast 8 character",
-                },
-              })}
+              {...register("password")}
             />
             <span className="text-red-500 text-sm">
               {errors.password?.message}
@@ -95,7 +87,13 @@ export default function Login() {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-orange-400 p-1 text-xl px-4 rounded-sm text-white "
+              className={`w-full p-1 px-6 rounded-sm text-xl 
+    ${
+      isFormValid
+        ? "bg-blue-400 text-white"
+        : "bg-gray-400 text-gray-200 cursor-not-allowed"
+    }`}
+              disabled={!isFormValid}
             >
               Signin
             </button>
