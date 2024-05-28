@@ -3,17 +3,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { schema } from "./Validator";
 
-const schema = z.object({
-  email: z
-    .string()
-    .nonempty({ message: "Email is required" })
-    .email({ message: "Email is not valid" }),
-  password: z
-    .string()
-    .nonempty({ message: "Password is required" })
-    .min(8, { message: "Password requires at least 8 characters" }),
-});
 
 type Data = z.infer<typeof schema>;
 
