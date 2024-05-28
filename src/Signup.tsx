@@ -1,23 +1,48 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 
-type Data = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+// Define the schema using Zod
+const schema = z.object({
+  firstName: z.string().nonempty({ message: "First Name is required" }),
+  lastName: z.string().optional(),
+  email: z
+    .string()
+    .nonempty({ message: "Email is required" })
+    .email({ message: "Email is not valid" }),
+  password: z
+    .string()
+    .nonempty({ message: "Password is required" })
+    .min(8, { message: "Requires at least 8 characters" }),
+});
+
+// Infer the data type from the schema
+type Data = z.infer<typeof schema>;
 
 export default function Signup() {
-  const { register, handleSubmit, formState:{errors} } = useForm<Data>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Data>({
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit = (data: Data) => {
     console.log(data);
   };
+
+  const watchAllFields = watch();
+
+  const isFormValid =
+    watchAllFields.firstName && watchAllFields.email && watchAllFields.password;
+
   return (
     <div className="h-screen flex justify-center items-center bg-gray-200">
-      <div className="w-full max-w-xl border-2 flex flex-col space-y-4 rounded-xl m-6 p-4 py-6 border-black bg-white">
+      <div className="w-full border-2 flex flex-col space-y-4 rounded-xl m-6 p-4 py-6 border-black bg-white mobile:max-w-sm tablet:max-w-xl">
         <div>
           <span className="w-full max-w-xl font-sans text-3xl text-red-600 flex justify-center">
             Create an Account
@@ -28,21 +53,22 @@ export default function Signup() {
           className="w-full max-w-xl flex flex-col items-center p-8 space-y-6"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="w-full max-w-xl flex justify-center gap-3">
+          <div className="w-full max-w-xl flex justify-center gap-3 mobile:flex-col items-center tablet:flex-row">
             <div>
-              <span className="text-xl">First Name:</span>
+              <span className="text-xl">
+                First Name <span className="text-red-400">*</span>:
+              </span>
               <label htmlFor="firstName"></label>
               <input
                 className="border-2 w-full p-1"
                 type="text"
                 id="firstName"
                 placeholder="First Name"
-                {...register("firstName",
-                  {required:"First Name is Required"}
-                )}
+                {...register("firstName")}
               />
-            <span className="text-red-500 text-sm">{errors.firstName?.message}</span>
-              
+              <span className="text-red-500 text-sm">
+                {errors.firstName?.message}
+              </span>
             </div>
             <div>
               <span className="text-xl">Last Name:</span>
@@ -57,45 +83,48 @@ export default function Signup() {
             </div>
           </div>
           <div className="w-full">
-            <span className="text-xl">Email:</span>
+            <span className="text-xl">
+              Email<span className="text-red-400">*</span>:
+            </span>
             <label htmlFor="email"></label>
             <input
               className="border-2 w-full p-1"
-              type="email"
+              type="text"
               id="email"
               placeholder="Enter the email"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                  message: "Email is not valid",
-                },
-              })}
+              {...register("email")}
             />
-            <span className="text-red-500 text-sm">{errors.email?.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.email?.message}
+            </span>
           </div>
           <div className="w-full">
-            <span className="text-xl">Password:</span>
+            <span className="text-xl">
+              Password <span className="text-red-400">*</span>:
+            </span>
             <label htmlFor="password"></label>
             <input
               className="border-2 w-full p-1"
               type="password"
               id="password"
               placeholder="Enter Password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Requires atleast 8 character",
-                },
-              })}
+              {...register("password")}
             />
-            <span className="text-red-500 text-sm">{errors.password?.message}</span>
-
-            
+            <span className="text-red-500 text-sm">
+              {errors.password?.message}
+            </span>
           </div>
           <div>
-            <button className="bg-blue-400 w-full p-1  px-6 rounded-sm text-white text-xl">
+            <button
+              type="submit"
+              className={`w-full p-1 px-6 rounded-sm text-xl 
+    ${
+      isFormValid
+        ? "bg-blue-400 text-white"
+        : "bg-gray-400 text-gray-200 cursor-not-allowed"
+    }`}
+              disabled={!isFormValid}
+            >
               Register
             </button>
           </div>
@@ -104,7 +133,7 @@ export default function Signup() {
           <span className="flex items-center">Already have an account,</span>
           <Link
             to={"/login"}
-            className="text-orange-600 flex items-center text-xl"
+            className="text-blue-600 flex items-center text-xl"
           >
             Signin
           </Link>
