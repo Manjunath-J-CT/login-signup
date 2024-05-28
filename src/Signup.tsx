@@ -3,22 +3,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import { schema } from "./Validator";
 
-// Define the schema using Zod
-const schema = z.object({
-  firstName: z.string().nonempty({ message: "First Name is required" }),
-  lastName: z.string().optional(),
-  email: z
-    .string()
-    .nonempty({ message: "Email is required" })
-    .email({ message: "Email is not valid" }),
-  password: z
-    .string()
-    .nonempty({ message: "Password is required" })
-    .min(8, { message: "Requires at least 8 characters" }),
-});
 
-// Infer the data type from the schema
 type Data = z.infer<typeof schema>;
 
 export default function Signup() {
