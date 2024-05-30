@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-// Define the schema using Zod
-export const schema = z.object({
-  firstName: z.string().nonempty({ message: "First Name is required" }),
-  lastName: z.string().optional(),
+export const loginSchema = z.object({
   email: z
     .string()
     .nonempty({ message: "Email is required" })

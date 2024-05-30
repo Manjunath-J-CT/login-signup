@@ -3,27 +3,25 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema } from "./Validator";
+import { loginSchema } from "../validators/Validator";
 
-
-type Data = z.infer<typeof schema>;
+type Data = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Data>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
   });
+
+  console.log(isValid)
+
   const onSubmit: SubmitHandler<Data> = (data: Data) => {
     console.log(data);
   };
-
-  const watchAllFields = watch();
-
-  const isFormValid = watchAllFields.email && watchAllFields.password;
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-200">
@@ -80,11 +78,11 @@ export default function Login() {
               type="submit"
               className={`w-full p-1 px-6 rounded-sm text-xl 
     ${
-      isFormValid
+      isValid
         ? "bg-blue-400 text-white"
         : "bg-gray-400 text-gray-200 cursor-not-allowed"
     }`}
-              disabled={!isFormValid}
+              disabled={!isValid}
             >
               Signin
             </button>
