@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { schema } from "./Validator";
-
+import { schema } from "../validators/Validator";
 
 type Data = z.infer<typeof schema>;
 
@@ -12,8 +11,8 @@ export default function Signup() {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    formState: { errors, isValid },
+    trigger,
   } = useForm<Data>({
     resolver: zodResolver(schema),
   });
@@ -21,11 +20,6 @@ export default function Signup() {
   const onSubmit = (data: Data) => {
     console.log(data);
   };
-
-  const watchAllFields = watch();
-
-  const isFormValid =
-    watchAllFields.firstName && watchAllFields.email && watchAllFields.password;
 
   return (
     <div className="h-screen flex justify-center items-center bg-gray-200">
@@ -51,22 +45,33 @@ export default function Signup() {
                 type="text"
                 id="firstName"
                 placeholder="First Name"
-                {...register("firstName")}
+                {...register("firstName", {
+                  onBlur: () => trigger("firstName"),
+                  onChange: () => trigger("firstName"),
+                })}
               />
               <span className="text-red-500 text-sm">
                 {errors.firstName?.message}
               </span>
             </div>
             <div>
-              <span className="text-xl">Last Name:</span>
+              <span className="text-xl">
+                Last Name<span className="text-red-400">*</span>:
+              </span>
               <label htmlFor="lastName"></label>
               <input
                 className="border-2 w-full p-1"
                 type="text"
                 id="lastName"
                 placeholder="Last Name"
-                {...register("lastName")}
+                {...register("lastName", {
+                  onBlur: () => trigger("lastName"),
+                  onChange: () => trigger("lastName"),
+                })}
               />
+              <span className="text-red-500 text-sm">
+                {errors.lastName?.message}
+              </span>
             </div>
           </div>
           <div className="w-full">
@@ -79,7 +84,10 @@ export default function Signup() {
               type="text"
               id="email"
               placeholder="Enter the email"
-              {...register("email")}
+              {...register("email", {
+                onBlur: () => trigger("email"),
+                onChange: () => trigger("email"),
+              })}
             />
             <span className="text-red-500 text-sm">
               {errors.email?.message}
@@ -95,7 +103,10 @@ export default function Signup() {
               type="password"
               id="password"
               placeholder="Enter Password"
-              {...register("password")}
+              {...register("password", {
+                onBlur: () => trigger("password"),
+                onChange: () => trigger("password"),
+              })}
             />
             <span className="text-red-500 text-sm">
               {errors.password?.message}
@@ -105,12 +116,12 @@ export default function Signup() {
             <button
               type="submit"
               className={`w-full p-1 px-6 rounded-sm text-xl 
-    ${
-      isFormValid
-        ? "bg-blue-400 text-white"
-        : "bg-gray-400 text-gray-200 cursor-not-allowed"
-    }`}
-              disabled={!isFormValid}
+                ${
+                  isValid
+                    ? "bg-blue-400 text-white"
+                    : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                }`}
+              disabled={!isValid}
             >
               Register
             </button>

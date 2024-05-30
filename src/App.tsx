@@ -5,15 +5,14 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import Login from "./Login";
-import Signup from "./Signup";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
@@ -25,4 +24,3 @@ function App() {
 }
 
 export default App;
-
