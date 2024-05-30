@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { schema } from "../validators/Validator";
+import { signupSchema } from "../validators/Validator";
 
-type Data = z.infer<typeof schema>;
+type Data = z.infer<typeof signupSchema>;
 
 export default function Signup() {
   const {
@@ -14,7 +14,7 @@ export default function Signup() {
     formState: { errors, isValid },
     trigger,
   } = useForm<Data>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signupSchema),
   });
 
   const onSubmit = (data: Data) => {
@@ -34,8 +34,8 @@ export default function Signup() {
           className="w-full max-w-xl flex flex-col items-center p-8 space-y-6"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="w-full max-w-xl flex justify-center gap-3 mobile:flex-col items-center tablet:flex-row">
-            <div>
+          <div className="w-full max-w-xl flex gap-3 mobile:flex-col tablet:flex-row">
+            <div className="w-full flex-col mobile:max-w-xl tablet:max-w-1/2">
               <span className="text-xl">
                 First Name <span className="text-red-400">*</span>:
               </span>
@@ -54,7 +54,7 @@ export default function Signup() {
                 {errors.firstName?.message}
               </span>
             </div>
-            <div>
+            <div className="w-full flex-col mobile:max-w-xl tablet:max-w-1/2">
               <span className="text-xl">
                 Last Name<span className="text-red-400">*</span>:
               </span>

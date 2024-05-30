@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const schema = z.object({
+export const signupSchema = z.object({
   firstName: z
     .string()
     .nonempty({ message: "First Name is required" })
